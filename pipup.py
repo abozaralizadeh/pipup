@@ -127,6 +127,13 @@ def update_requirements_file(file_path: Path, pip_packages: Dict[str, str], dry_
         print(f"\nDry run: Would update {updated_count} packages")
         if not_found_packages:
             print(f"Packages not found in pip freeze: {', '.join(not_found_packages)}")
+        
+        # Print the updated requirements.txt content
+        print(f"\nUpdated requirements.txt content:")
+        print("-" * 50)
+        for line in updated_lines:
+            print(line.rstrip('\n'))
+        print("-" * 50)
         return
     
     # Write updated requirements.txt
@@ -165,7 +172,7 @@ Examples:
     parser.add_argument(
         '--version',
         action='version',
-        version='pipup 1.0.0'
+        version='pipup 1.0.1'
     )
     
     args = parser.parse_args()
