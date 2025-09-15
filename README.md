@@ -196,6 +196,12 @@ python -m build
 
 ## 📝 Changelog
 
+### 1.0.5
+- **Workflow Fixes**: Fixed GitHub Actions release workflow permissions
+- **Modern Actions**: Updated to use `softprops/action-gh-release@v1`
+- **Auto Changelog**: Added automatic release notes generation
+- **Better Reliability**: Improved CI/CD pipeline stability
+
 ### 1.0.3
 - **Command Alias**: Added `requp` as an alias command for PyPI users
 - **Dual Commands**: Users can now use either `pipup` or `requp` commands
