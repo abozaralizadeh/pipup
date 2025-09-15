@@ -196,7 +196,7 @@ python -m build
 
 ## 📝 Changelog
 
-### 1.0.7
+### 1.0.7 & 1.0.8
 - **GitHub Permissions**: Fixed GitHub Actions release permissions
 - **Release Attachments**: Added built packages to GitHub releases
 - **Better Permissions**: Added explicit contents: write permissions
