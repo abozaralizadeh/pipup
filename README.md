@@ -61,6 +61,14 @@ pipup --dry-run                          # Preview changes to requirements.txt
 requp --dry-run                          # Preview changes to requirements.txt
 ```
 
+### Upgrade to Latest Versions
+```bash
+pipup -U                                 # Update to latest versions from PyPI
+pipup -U --dry-run                       # Preview latest version updates
+pipup requirements-dev.txt -U            # Update specific file to latest
+# or use requp instead of pipup
+```
+
 ### Update Different Requirements Files
 ```bash
 pipup requirements-dev.txt               # Update specific file
@@ -105,6 +113,16 @@ azure-storage-blob==12.19.1
 ### Supported Conventions
 - `#skip-pipup` or `#skip-requp` - Skip the next package line
 - `#stop-pipup` or `#stop-requp` - Skip all remaining lines
+
+## 🔄 Upgrade Mode
+
+The `-U` or `--upgrade` flag updates packages to their latest versions from PyPI instead of using the versions from `pip freeze`. This is useful when you want to:
+
+- **Update to latest**: Get the newest versions of all packages
+- **Stay current**: Keep your dependencies up-to-date
+- **Test compatibility**: Check if your code works with latest versions
+
+**Note**: Skip and stop conventions work the same way in upgrade mode, giving you fine-grained control over which packages get updated.
 
 ## 📋 Examples
 
@@ -224,8 +242,13 @@ python -m build
 
 ## 📝 Changelog
 
+### 1.1.1
+- **Upgrade Mode**: Added `-U`/`--upgrade` flag to update to latest PyPI versions
+- **PyPI Integration**: Get latest package versions directly from PyPI
+- **Skip Conventions**: Skip and stop conventions work with upgrade mode
+- **Enhanced Control**: Fine-grained control over which packages get updated
+
 ### 1.1.0
-- **Version Bump**: Updated to version 1.1.0
 - **Homebrew Migration**: Changed from `abozaralizadeh/tap/pipup` to `abozaralizadeh/brew/pipup`
 - **Better Naming**: More standard Homebrew tap naming convention
 - **Improved Documentation**: Updated all installation instructions
