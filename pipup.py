@@ -172,7 +172,7 @@ Examples:
     parser.add_argument(
         '--version',
         action='version',
-        version='pipup 1.0.3'
+        version='pipup 1.0.4'
     )
     
     args = parser.parse_args()
