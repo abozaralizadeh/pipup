@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="requp",
-    version="1.0.8",
+    version="1.0.9",
     author="Abozar Alizadeh",
     author_email="abozar@example.com",
     description="Update Python package versions in requirements.txt with exact versions from pip freeze",

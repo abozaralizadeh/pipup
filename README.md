@@ -23,7 +23,7 @@ A command-line tool that updates existing packages in requirements.txt with thei
 
 ### Homebrew (macOS) - Recommended
 ```bash
-brew install abozaralizadeh/pipup/pipup
+brew install abozaralizadeh/brew/pipup
 ```
 
 ### PyPI
@@ -49,23 +49,23 @@ pip install git+https://github.com/abozaralizadeh/pipup.git
 
 ### Basic Usage
 ```bash
-pipup requirements.txt
+pipup                                    # Update requirements.txt (default)
 # or
-requp requirements.txt
+requp                                    # Update requirements.txt (default)
 ```
 
 ### Dry Run (Preview Changes)
 ```bash
-pipup requirements.txt --dry-run
+pipup --dry-run                          # Preview changes to requirements.txt
 # or
-requp requirements.txt --dry-run
+requp --dry-run                          # Preview changes to requirements.txt
 ```
 
 ### Update Different Requirements Files
 ```bash
-pipup requirements-dev.txt
-pipup requirements-prod.txt
-pipup requirements-test.txt
+pipup requirements-dev.txt               # Update specific file
+pipup requirements-prod.txt              # Update specific file
+pipup requirements-test.txt              # Update specific file
 # or use requp instead of pipup
 ```
 
@@ -77,6 +77,34 @@ pipup --version
 requp --help
 requp --version
 ```
+
+## 🎛️ Skip Conventions
+
+Pipup supports special comment conventions to control which packages get updated:
+
+### Skip Single Package
+```txt
+# This package should not be updated
+#skip-pipup
+requests==2.31.0
+
+# Or use the requp alias
+#skip-requp
+Flask>=2.0.0
+```
+
+### Skip All Remaining Packages
+```txt
+# Everything below this line should be ignored
+#stop-pipup
+pydantic==1.10.15
+azure-storage-blob==12.19.1
+# This comment will also be preserved
+```
+
+### Supported Conventions
+- `#skip-pipup` or `#skip-requp` - Skip the next package line
+- `#stop-pipup` or `#stop-requp` - Skip all remaining lines
 
 ## 📋 Examples
 
@@ -106,7 +134,7 @@ duckduckgo-search
 
 ### Dry Run Output
 ```bash
-$ pipup requirements.txt --dry-run
+$ pipup --dry-run
 Running pip freeze...
 Found 246 installed packages
 Dry run: Updating test_requirements.txt...
@@ -196,9 +224,19 @@ python -m build
 
 ## 📝 Changelog
 
-### 1.0.7 & 1.0.8
+### 1.0.9
+- **Default File**: Added default value for requirements.txt file
+- **Simplified Usage**: Can now run `pipup` or `requp` without specifying file
+- **Skip Conventions**: Added `#skip-pipup`/`#skip-requp` and `#stop-pipup`/`#stop-requp` comments
+- **Fine-grained Control**: Users can now skip individual packages or all remaining packages
+- **Better UX**: More intuitive for common use case
+- **Updated Documentation**: Examples now show default behavior and skip conventions
+
+### 1.0.9
 - **GitHub Permissions**: Fixed GitHub Actions release permissions
 - **Release Attachments**: Added built packages to GitHub releases
+
+### 1.0.7
 - **Better Permissions**: Added explicit contents: write permissions
 - **Improved Workflow**: Enhanced CI/CD pipeline reliability
 

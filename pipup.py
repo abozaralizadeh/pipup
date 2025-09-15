@@ -85,13 +85,38 @@ def update_requirements_file(file_path: Path, pip_packages: Dict[str, str], dry_
     updated_lines = []
     updated_count = 0
     not_found_packages = []
+    skip_next = False
+    stop_processing = False
     
-    for line in lines:
+    for i, line in enumerate(lines):
+        # Check for stop comments first
+        if line.strip() in ['#stop-pipup', '#stop-requp']:
+            stop_processing = True
+            updated_lines.append(line)
+            continue
+        
+        # If we've hit a stop comment, just copy remaining lines
+        if stop_processing:
+            updated_lines.append(line)
+            continue
+        
+        # Check for skip comments
+        if line.strip() in ['#skip-pipup', '#skip-requp']:
+            skip_next = True
+            updated_lines.append(line)
+            continue
+        
         package_name, version_spec, package_with_extras, original_line = parse_requirements_line(line)
         
         if package_name is None:
             # Empty line or comment, keep as is
             updated_lines.append(original_line + '\n' if not original_line.endswith('\n') else original_line)
+            continue
+        
+        # If we should skip this package, keep it as is
+        if skip_next:
+            updated_lines.append(original_line + '\n' if not original_line.endswith('\n') else original_line)
+            skip_next = False
             continue
         
         # Check for package with extras first, then base package
@@ -152,15 +177,22 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  pipup requirements.txt                    # Update requirements.txt
-  pipup requirements.txt --dry-run          # Show what would be updated
-  pipup requirements-dev.txt                # Update requirements-dev.txt
+  pipup                                    # Update requirements.txt (default)
+  pipup --dry-run                          # Show what would be updated
+  pipup requirements.txt                   # Update requirements.txt
+  pipup requirements-dev.txt               # Update requirements-dev.txt
+
+Skip Conventions:
+  #skip-pipup or #skip-requp               # Skip the next package line
+  #stop-pipup or #stop-requp               # Skip all remaining lines
         """
     )
     
     parser.add_argument(
         'requirements_file',
-        help='Path to requirements.txt file to update'
+        nargs='?',
+        default='requirements.txt',
+        help='Path to requirements.txt file to update (default: requirements.txt)'
     )
     
     parser.add_argument(
@@ -172,7 +204,7 @@ Examples:
     parser.add_argument(
         '--version',
         action='version',
-        version='pipup 1.0.8'
+        version='pipup 1.0.9'
     )
     
     args = parser.parse_args()
