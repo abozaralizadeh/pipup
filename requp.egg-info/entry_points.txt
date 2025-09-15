@@ -1,2 +1,3 @@
 [console_scripts]
 pipup = pipup:main
+requp = pipup:main

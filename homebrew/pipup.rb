@@ -3,9 +3,8 @@ class Pipup < Formula
 
   desc "Update Python package versions in requirements.txt with exact versions from pip freeze"
   homepage "https://github.com/abozaralizadeh/pipup"
-  url "https://github.com/abozaralizadeh/pipup/archive/v1.0.1.tar.gz"
-  sha256 ""  # This will be filled in when the tarball is created
-  version "1.0.1"
+  url "https://github.com/abozaralizadeh/pipup/archive/v1.0.2.tar.gz"
+  sha256 "f4818553f9b10eddb143747591a0890cc405a93debdb24c03cd386b4681e4206"
   license "MIT"
 
   depends_on "python@3.12"

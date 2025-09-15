@@ -67,7 +67,7 @@ pipup --version
 
 #### Homebrew (macOS)
 ```bash
-brew install pipup
+brew install abozaralizadeh/pipup/pipup
 ```
 
 #### PyPI

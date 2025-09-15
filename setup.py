@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="requp",
-    version="1.0.2",
+    version="1.0.3",
     author="Abozar Alizadeh",
     author_email="abozar@example.com",
     description="Update Python package versions in requirements.txt with exact versions from pip freeze",
@@ -37,6 +37,7 @@ setup(
     entry_points={
         "console_scripts": [
             "pipup=pipup:main",
+            "requp=pipup:main",
         ],
     },
     keywords="pip requirements version management python packaging",

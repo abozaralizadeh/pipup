@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: requp
-Version: 1.0.2
+Version: 1.0.3
 Summary: Update Python package versions in requirements.txt with exact versions from pip freeze
 Home-page: https://github.com/abozaralizadeh/pipup
 Author: Abozar Alizadeh
@@ -38,65 +38,87 @@ Dynamic: summary
 
 # Pipup
 
-**Update Python Package versions in requirements.txt**
+**Update Python Package versions in requirements.txt with exact versions from pip freeze**
 
-A command-line tool that updates existing packages in requirements.txt with their exact versions from pip freeze, without adding new packages.
+[![PyPI version](https://badge.fury.io/py/requp.svg)](https://badge.fury.io/py/requp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
-## Features
+A command-line tool that updates existing packages in requirements.txt with their exact versions from pip freeze, without adding new packages. Perfect for keeping your requirements.txt files up-to-date with your current environment.
 
-- ✅ Updates only existing packages in requirements.txt
-- ✅ Preserves package order and formatting
-- ✅ Handles complex version specifiers (>=, <, ~, etc.)
-- ✅ Supports package extras (e.g., `Flask[async]`)
-- ✅ Dry-run mode to preview changes
-- ✅ Warns about packages not found in pip freeze
-- ✅ Preserves comments and empty lines
+## ✨ Features
 
-## Installation
+- ✅ **Safe Updates**: Only updates existing packages, never adds new ones
+- ✅ **Preserves Formatting**: Maintains package order, comments, and empty lines
+- ✅ **Smart Version Handling**: Supports all version specifiers (>=, <, ~, etc.)
+- ✅ **Package Extras**: Correctly handles packages with extras (e.g., `Flask[async]`)
+- ✅ **Dry Run Mode**: Preview changes before applying them
+- ✅ **Enhanced Dry Run**: Shows complete updated requirements.txt content
+- ✅ **Error Handling**: Warns about packages not found in pip freeze
+- ✅ **Cross-Platform**: Works on macOS, Linux, and Windows
 
-### Homebrew (macOS)
+## 🚀 Installation
+
+### Homebrew (macOS) - Recommended
 ```bash
-brew install pipup
+brew install abozaralizadeh/pipup/pipup
 ```
 
-### From source
+### PyPI
+```bash
+pip install requp
+```
+
+**Note**: After installation, you can use either `pipup` or `requp` commands - they work identically!
+
+### From Source
 ```bash
 git clone https://github.com/abozaralizadeh/pipup.git
 cd pipup
 pip install -e .
 ```
 
-### PyPI installation
-```bash
-pip install requp
-```
-
-### Direct installation
+### Direct Installation
 ```bash
 pip install git+https://github.com/abozaralizadeh/pipup.git
 ```
 
-## Usage
+## 📖 Usage
 
-### Basic usage
+### Basic Usage
 ```bash
 pipup requirements.txt
+# or
+requp requirements.txt
 ```
 
-### Dry run (preview changes)
+### Dry Run (Preview Changes)
 ```bash
 pipup requirements.txt --dry-run
+# or
+requp requirements.txt --dry-run
 ```
 
-### Update different requirements files
+### Update Different Requirements Files
 ```bash
 pipup requirements-dev.txt
 pipup requirements-prod.txt
+pipup requirements-test.txt
+# or use requp instead of pipup
 ```
 
-## Examples
+### Get Help
+```bash
+pipup --help
+pipup --version
+# or
+requp --help
+requp --version
+```
 
-### Before running pipup
+## 📋 Examples
+
+### Before Running Pipup
 ```txt
 requests
 Flask>=2.0.0
@@ -104,9 +126,11 @@ langchain
 pydantic>=1.0.0,<2.0.0
 # This is a comment
 azure-storage-blob
+Flask[async]
+duckduckgo-search
 ```
 
-### After running pipup
+### After Running Pipup
 ```txt
 requests==2.32.4
 Flask==3.1.1
@@ -114,72 +138,148 @@ langchain==0.3.27
 pydantic==2.11.7
 # This is a comment
 azure-storage-blob==12.26.0
+Flask[async]==3.1.1
+duckduckgo-search
 ```
 
-### Dry run output
+### Dry Run Output
 ```bash
 $ pipup requirements.txt --dry-run
 Running pip freeze...
-Found 45 installed packages
-Dry run: Updating requirements.txt...
-Updated requests: no version -> ==2.32.4
-Updated Flask: >=2.0.0 -> ==3.1.1
-Updated langchain: no version -> ==0.3.27
-Updated pydantic: >=1.0.0,<2.0.0 -> ==2.11.7
-Updated azure-storage-blob: no version -> ==12.26.0
+Found 246 installed packages
+Dry run: Updating test_requirements.txt...
+Warning: flask not found in pip freeze, keeping original specification
+Warning: duckduckgo-search not found in pip freeze, keeping original specification
 
-Dry run: Would update 5 packages
+Dry run: Would update 4 packages
+Packages not found in pip freeze: flask, duckduckgo-search
+
+Updated requirements.txt content:
+--------------------------------------------------
+requests==2.31.0
+Flask>=2.0.0
+langchain==0.0.329
+pydantic==1.10.15
+# This is a comment
+azure-storage-blob==12.19.1
+Flask[async]
+duckduckgo-search
+--------------------------------------------------
 ```
 
-## How it works
+## 🔧 How It Works
 
 1. **Runs pip freeze** to get all installed packages with exact versions
-2. **Parses requirements.txt** line by line, preserving formatting
-3. **Matches packages** by name (case-insensitive)
-4. **Updates version specifiers** to exact versions (==)
-5. **Preserves everything else** (comments, empty lines, package order)
+2. **Parses requirements.txt** line by line, preserving formatting and comments
+3. **Matches packages** by name (case-insensitive) and handles extras
+4. **Updates version specifiers** to exact versions (==) from pip freeze
+5. **Preserves everything else** (comments, empty lines, package order, warnings)
 
-## Supported version specifiers
+## 📦 Supported Version Specifiers
 
 Pipup handles all standard pip version specifiers:
-- `package` (no version)
-- `package==1.0.0` (exact version)
-- `package>=1.0.0` (minimum version)
-- `package<2.0.0` (maximum version)
-- `package>=1.0.0,<2.0.0` (version range)
-- `package~=1.0.0` (compatible release)
-- `package!=1.0.0` (exclusion)
 
-## Package extras support
+| Specifier | Example | Result |
+|-----------|---------|--------|
+| No version | `requests` | `requests==2.32.4` |
+| Exact version | `requests==1.0.0` | `requests==2.32.4` |
+| Minimum version | `requests>=1.0.0` | `requests==2.32.4` |
+| Maximum version | `requests<3.0.0` | `requests==2.32.4` |
+| Version range | `requests>=1.0.0,<3.0.0` | `requests==2.32.4` |
+| Compatible release | `requests~=1.0.0` | `requests==2.32.4` |
+| Exclusion | `requests!=1.0.0` | `requests==2.32.4` |
+
+## 🎯 Package Extras Support
 
 Pipup correctly handles packages with extras:
-- `Flask[async]` → `Flask[async]==3.1.1`
-- `requests[security]` → `requests[security]==2.32.4`
 
-## Error handling
+```txt
+# Before
+Flask[async]
+requests[security]
+django[postgresql]
 
-- **Missing requirements.txt**: Exits with error
+# After
+Flask[async]==3.1.1
+requests[security]==2.32.4
+django[postgresql]==4.2.7
+```
+
+## ⚠️ Error Handling
+
+- **Missing requirements.txt**: Exits with clear error message
 - **Package not found**: Warns and keeps original specification
-- **pip not found**: Exits with error
-- **Invalid requirements.txt**: Preserves malformed lines
+- **pip not found**: Exits with helpful error message
+- **Invalid requirements.txt**: Preserves malformed lines as-is
+- **Permission errors**: Clear error messages for file access issues
 
-## License
+## 🛠️ Development
 
-MIT License - see LICENSE file for details.
+### Setup Development Environment
+```bash
+git clone https://github.com/abozaralizadeh/pipup.git
+cd pipup
+pip install -e .
+```
 
-## Contributing
+### Running Tests
+```bash
+python -m pytest tests/
+```
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+### Building Package
+```bash
+python -m build
+```
 
-## Changelog
+## 📝 Changelog
+
+### 1.0.2
+- **PyPI Package Name**: Changed to `requp` to avoid naming conflicts
+- **Enhanced Dry Run**: Now shows complete updated requirements.txt content
+- **Improved Documentation**: Better examples and clearer instructions
+- **Homebrew Support**: Added Homebrew installation via repository
+
+### 1.0.1
+- **Enhanced Dry Run**: Added display of updated requirements.txt content
+- **Better Error Messages**: Improved warning and error output
+- **Documentation Updates**: Added comprehensive examples
 
 ### 1.0.0
-- Initial release
-- Basic package version updating
-- Dry-run mode
-- Support for all version specifiers
-- Package extras support
+- **Initial Release**: Basic package version updating
+- **Dry Run Mode**: Preview changes before applying
+- **Version Specifier Support**: All standard pip version specifiers
+- **Package Extras Support**: Handles packages with extras correctly
+- **Cross-Platform**: Works on macOS, Linux, and Windows
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests if applicable
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by the need for safe requirements.txt updates
+- Built with Python's excellent packaging tools
+- Thanks to all contributors and users
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/abozaralizadeh/pipup/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/abozaralizadeh/pipup/discussions)
+- **Email**: abozar@example.com
+
+---
+
+**Made with ❤️ for the Python community**
