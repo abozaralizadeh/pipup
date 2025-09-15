@@ -16,6 +16,11 @@ A command-line tool that updates existing packages in requirements.txt with thei
 
 ## Installation
 
+### Homebrew (macOS)
+```bash
+brew install pipup
+```
+
 ### From source
 ```bash
 git clone https://github.com/abozaralizadeh/pipup.git
