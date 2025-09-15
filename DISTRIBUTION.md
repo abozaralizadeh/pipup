@@ -72,7 +72,7 @@ brew install pipup
 
 #### PyPI
 ```bash
-pip install pipup
+pip install requp
 ```
 
 #### From Source

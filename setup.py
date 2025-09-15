@@ -9,8 +9,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="pipup",
-    version="1.0.1",
+    name="requp",
+    version="1.0.2",
     author="Abozar Alizadeh",
     author_email="abozar@example.com",
     description="Update Python package versions in requirements.txt with exact versions from pip freeze",
