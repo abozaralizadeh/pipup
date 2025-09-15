@@ -23,8 +23,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install build twine
 
-      - name: Build package
-        run: python -m build
+      - name: Clean and build package
+        run: |
+          rm -rf dist/ build/ *.egg-info/
+          python -m build
+          echo "Build completed. Contents of dist/:"
+          ls -la dist/
+
+      - name: Verify dist contents
+        run: |
+          echo "Contents of dist/ directory:"
+          ls -la dist/
+          echo "Files to upload:"
+          find dist/ -name "*.whl" -o -name "*.tar.gz"
 
       - name: Upload to PyPI
         env:

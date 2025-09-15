@@ -196,6 +196,12 @@ python -m build
 
 ## 📝 Changelog
 
+### 1.0.6
+- **CI/CD Fixes**: Fixed GitHub Actions build and upload process
+- **Build Verification**: Added steps to verify dist/ contents before upload
+- **Clean Builds**: Ensures fresh builds without cached files
+- **Better Debugging**: Added logging to track build process
+
 ### 1.0.5
 - **Workflow Fixes**: Fixed GitHub Actions release workflow permissions
 - **Modern Actions**: Updated to use `softprops/action-gh-release@v1`
