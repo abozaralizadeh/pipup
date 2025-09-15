@@ -1,10 +1,10 @@
 Metadata-Version: 2.4
 Name: requp
-Version: 1.0.9
+Version: 1.1.0
 Summary: Update Python package versions in requirements.txt with exact versions from pip freeze
 Home-page: https://github.com/abozaralizadeh/pipup
 Author: Abozar Alizadeh
-Author-email: abozar@example.com
+Author-email: abozar.alizadeh@gmail.com
 Project-URL: Bug Reports, https://github.com/abozaralizadeh/pipup/issues
 Project-URL: Source, https://github.com/abozaralizadeh/pipup
 Keywords: pip requirements version management python packaging

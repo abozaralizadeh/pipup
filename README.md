@@ -224,6 +224,12 @@ python -m build
 
 ## 📝 Changelog
 
+### 1.1.0
+- **Version Bump**: Updated to version 1.1.0
+- **Homebrew Migration**: Changed from `abozaralizadeh/tap/pipup` to `abozaralizadeh/brew/pipup`
+- **Better Naming**: More standard Homebrew tap naming convention
+- **Improved Documentation**: Updated all installation instructions
+
 ### 1.0.9
 - **Default File**: Added default value for requirements.txt file
 - **Simplified Usage**: Can now run `pipup` or `requp` without specifying file
@@ -232,7 +238,7 @@ python -m build
 - **Better UX**: More intuitive for common use case
 - **Updated Documentation**: Examples now show default behavior and skip conventions
 
-### 1.0.9
+### 1.0.8
 - **GitHub Permissions**: Fixed GitHub Actions release permissions
 - **Release Attachments**: Added built packages to GitHub releases
 
@@ -302,8 +308,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/abozaralizadeh/pipup/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/abozaralizadeh/pipup/discussions)
-- **Email**: abozar@example.com
+- **Discussions**: [GitHub Discussions](https://github.com/abozaralizadeh/pipup/
 
 ---
 

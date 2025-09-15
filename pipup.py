@@ -204,7 +204,7 @@ Skip Conventions:
     parser.add_argument(
         '--version',
         action='version',
-        version='pipup 1.0.9'
+        version='pipup 1.1.0'
     )
     
     args = parser.parse_args()
