@@ -196,6 +196,12 @@ python -m build
 
 ## 📝 Changelog
 
+### 1.0.7
+- **GitHub Permissions**: Fixed GitHub Actions release permissions
+- **Release Attachments**: Added built packages to GitHub releases
+- **Better Permissions**: Added explicit contents: write permissions
+- **Improved Workflow**: Enhanced CI/CD pipeline reliability
+
 ### 1.0.6
 - **CI/CD Fixes**: Fixed GitHub Actions build and upload process
 - **Build Verification**: Added steps to verify dist/ contents before upload
