@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: requp
-Version: 1.0.4
+Version: 1.0.5
 Summary: Update Python package versions in requirements.txt with exact versions from pip freeze
 Home-page: https://github.com/abozaralizadeh/pipup
 Author: Abozar Alizadeh
@@ -278,7 +278,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/abozaralizadeh/pipup/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/abozaralizadeh/pipup/discussions)
-- **Email**: abozar@example.com
+- **Email**: abozar.alizadeh@gmail.com
 
 ---
 

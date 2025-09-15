@@ -196,6 +196,13 @@ python -m build
 
 ## 📝 Changelog
 
+### 1.0.3
+- **Command Alias**: Added `requp` as an alias command for PyPI users
+- **Dual Commands**: Users can now use either `pipup` or `requp` commands
+- **Enhanced Documentation**: Updated README with comprehensive examples and badges
+- **Improved Workflow**: Fixed GitHub Actions release workflow
+- **Better User Experience**: More intuitive for users installing from PyPI
+
 ### 1.0.2
 - **PyPI Package Name**: Changed to `requp` to avoid naming conflicts
 - **Enhanced Dry Run**: Now shows complete updated requirements.txt content
