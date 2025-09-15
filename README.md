@@ -1,0 +1,137 @@
+# Pipup
+
+**Update Python Package versions in requirements.txt**
+
+A command-line tool that updates existing packages in requirements.txt with their exact versions from pip freeze, without adding new packages.
+
+## Features
+
+- ✅ Updates only existing packages in requirements.txt
+- ✅ Preserves package order and formatting
+- ✅ Handles complex version specifiers (>=, <, ~, etc.)
+- ✅ Supports package extras (e.g., `Flask[async]`)
+- ✅ Dry-run mode to preview changes
+- ✅ Warns about packages not found in pip freeze
+- ✅ Preserves comments and empty lines
+
+## Installation
+
+### From source
+```bash
+git clone https://github.com/abozaralizadeh/pipup.git
+cd pipup
+pip install -e .
+```
+
+### Direct installation
+```bash
+pip install git+https://github.com/abozaralizadeh/pipup.git
+```
+
+## Usage
+
+### Basic usage
+```bash
+pipup requirements.txt
+```
+
+### Dry run (preview changes)
+```bash
+pipup requirements.txt --dry-run
+```
+
+### Update different requirements files
+```bash
+pipup requirements-dev.txt
+pipup requirements-prod.txt
+```
+
+## Examples
+
+### Before running pipup
+```txt
+requests
+Flask>=2.0.0
+langchain
+pydantic>=1.0.0,<2.0.0
+# This is a comment
+azure-storage-blob
+```
+
+### After running pipup
+```txt
+requests==2.32.4
+Flask==3.1.1
+langchain==0.3.27
+pydantic==2.11.7
+# This is a comment
+azure-storage-blob==12.26.0
+```
+
+### Dry run output
+```bash
+$ pipup requirements.txt --dry-run
+Running pip freeze...
+Found 45 installed packages
+Dry run: Updating requirements.txt...
+Updated requests: no version -> ==2.32.4
+Updated Flask: >=2.0.0 -> ==3.1.1
+Updated langchain: no version -> ==0.3.27
+Updated pydantic: >=1.0.0,<2.0.0 -> ==2.11.7
+Updated azure-storage-blob: no version -> ==12.26.0
+
+Dry run: Would update 5 packages
+```
+
+## How it works
+
+1. **Runs pip freeze** to get all installed packages with exact versions
+2. **Parses requirements.txt** line by line, preserving formatting
+3. **Matches packages** by name (case-insensitive)
+4. **Updates version specifiers** to exact versions (==)
+5. **Preserves everything else** (comments, empty lines, package order)
+
+## Supported version specifiers
+
+Pipup handles all standard pip version specifiers:
+- `package` (no version)
+- `package==1.0.0` (exact version)
+- `package>=1.0.0` (minimum version)
+- `package<2.0.0` (maximum version)
+- `package>=1.0.0,<2.0.0` (version range)
+- `package~=1.0.0` (compatible release)
+- `package!=1.0.0` (exclusion)
+
+## Package extras support
+
+Pipup correctly handles packages with extras:
+- `Flask[async]` → `Flask[async]==3.1.1`
+- `requests[security]` → `requests[security]==2.32.4`
+
+## Error handling
+
+- **Missing requirements.txt**: Exits with error
+- **Package not found**: Warns and keeps original specification
+- **pip not found**: Exits with error
+- **Invalid requirements.txt**: Preserves malformed lines
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## Changelog
+
+### 1.0.0
+- Initial release
+- Basic package version updating
+- Dry-run mode
+- Support for all version specifiers
+- Package extras support

@@ -1,0 +1,9 @@
+LICENSE
+README.md
+pipup.py
+setup.py
+pipup.egg-info/PKG-INFO
+pipup.egg-info/SOURCES.txt
+pipup.egg-info/dependency_links.txt
+pipup.egg-info/entry_points.txt
+pipup.egg-info/top_level.txt
