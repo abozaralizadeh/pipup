@@ -54,6 +54,8 @@ pipup                                    # Update requirements.txt (default)
 requp                                    # Update requirements.txt (default)
 ```
 
+**Note**: All commands use `requirements.txt` as the default file when no filename is specified.
+
 ### Dry Run (Preview Changes)
 ```bash
 pipup --dry-run                          # Preview changes to requirements.txt
@@ -80,8 +82,10 @@ pipup requirements-test.txt              # Update specific file
 ### Package Management Commands
 ```bash
 pipup remove --all                    # Remove all packages except pipup
-pipup remove requirements.txt         # Remove packages from requirements.txt
-pipup free requirements.txt           # Remove version constraints from requirements.txt
+pipup remove                          # Remove packages from requirements.txt (default)
+pipup remove requirements.txt         # Remove packages from specific file
+pipup free                            # Remove version constraints from requirements.txt (default)
+pipup free requirements.txt           # Remove version constraints from specific file
 # or use requp instead of pipup
 ```
 
@@ -147,8 +151,9 @@ Removes all packages from the virtual environment except pipup itself. This is u
 
 ### Remove Specific Packages
 ```bash
-pipup remove requirements.txt
-pipup remove requirements-dev.txt
+pipup remove                          # Remove packages from requirements.txt (default)
+pipup remove requirements-dev.txt     # Remove packages from specific file
+pipup remove requirements-prod.txt    # Remove packages from specific file
 ```
 Removes only the packages listed in the specified requirements file. This is useful for:
 - **Selective cleanup**: Remove only specific project dependencies
@@ -157,8 +162,9 @@ Removes only the packages listed in the specified requirements file. This is use
 
 ### Free Version Constraints
 ```bash
-pipup free requirements.txt
-pipup free requirements-dev.txt
+pipup free                            # Remove version constraints from requirements.txt (default)
+pipup free requirements-dev.txt       # Remove version constraints from specific file
+pipup free requirements-prod.txt      # Remove version constraints from specific file
 ```
 Removes all version constraints from the requirements file, keeping only package names. This is useful for:
 - **Flexible versions**: Allow pip to choose compatible versions

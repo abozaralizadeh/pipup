@@ -402,9 +402,9 @@ Examples:
   pipup requirements.txt                   # Update requirements.txt
   pipup requirements-dev.txt -U            # Update requirements-dev.txt to latest
   pipup remove --all                       # Remove all packages except pipup
-  pipup remove                             # Remove packages from requirements.txt
+  pipup remove                             # Remove packages from requirements.txt (default)
   pipup remove requirements.txt            # Remove packages from specific file
-  pipup free                               # Remove version constraints from requirements.txt
+  pipup free                               # Remove version constraints from requirements.txt (default)
   pipup free requirements.txt              # Remove version constraints from specific file
 
 Skip Conventions:
@@ -465,7 +465,7 @@ Skip Conventions:
     
     # Check if we're in legacy mode (no subcommand provided)
     import sys
-    if len(sys.argv) == 1 or (len(sys.argv) > 1 and sys.argv[1] not in ['update', 'remove', 'free', '--help', '--version', '-h']):
+    if len(sys.argv) == 1 or (len(sys.argv) > 1 and sys.argv[1] not in ['update', 'remove', 'free', '--help', '--version', '-h'] and (sys.argv[1].endswith('.txt') or sys.argv[1] in ['--dry-run', '-U', '--upgrade'])):
         # Legacy mode - treat as update command
         legacy_parser = argparse.ArgumentParser(add_help=False)
         legacy_parser.add_argument('requirements_file', nargs='?', default='requirements.txt')
