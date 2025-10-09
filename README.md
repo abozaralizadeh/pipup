@@ -77,6 +77,14 @@ pipup requirements-test.txt              # Update specific file
 # or use requp instead of pipup
 ```
 
+### Package Management Commands
+```bash
+pipup remove --all                    # Remove all packages except pipup
+pipup remove requirements.txt         # Remove packages from requirements.txt
+pipup free requirements.txt           # Remove version constraints from requirements.txt
+# or use requp instead of pipup
+```
+
 ### Get Help
 ```bash
 pipup --help
@@ -123,6 +131,54 @@ The `-U` or `--upgrade` flag updates packages to their latest versions from PyPI
 - **Test compatibility**: Check if your code works with latest versions
 
 **Note**: Skip and stop conventions work the same way in upgrade mode, giving you fine-grained control over which packages get updated.
+
+## 🗑️ Package Management Commands
+
+Pipup now includes powerful package management commands for cleaning up your virtual environment:
+
+### Remove All Packages
+```bash
+pipup remove --all
+```
+Removes all packages from the virtual environment except pipup itself. This is useful for:
+- **Clean slate**: Starting fresh with a clean environment
+- **Environment reset**: Removing all dependencies before reinstalling
+- **Testing**: Ensuring clean test environments
+
+### Remove Specific Packages
+```bash
+pipup remove requirements.txt
+pipup remove requirements-dev.txt
+```
+Removes only the packages listed in the specified requirements file. This is useful for:
+- **Selective cleanup**: Remove only specific project dependencies
+- **Environment isolation**: Clean up project-specific packages
+- **Dependency management**: Remove packages from specific requirement files
+
+### Free Version Constraints
+```bash
+pipup free requirements.txt
+pipup free requirements-dev.txt
+```
+Removes all version constraints from the requirements file, keeping only package names. This is useful for:
+- **Flexible versions**: Allow pip to choose compatible versions
+- **Development**: Remove strict version pinning during development
+- **Compatibility testing**: Test with different version combinations
+
+**Examples:**
+```txt
+# Before
+requests==2.28.1
+numpy>=1.21.0
+pandas[dev]==1.5.0
+flask>=2.0.0,<3.0.0
+
+# After pipup free
+requests
+numpy
+pandas[dev]
+flask
+```
 
 ## 📋 Examples
 
@@ -241,6 +297,15 @@ python -m build
 ```
 
 ## 📝 Changelog
+
+### 1.2.0
+- **New Commands**: Added `remove` and `free` subcommands for package management
+- **Remove All**: `pipup remove --all` removes all packages except pipup itself
+- **Remove Specific**: `pipup remove [file]` removes packages from requirements file
+- **Free Constraints**: `pipup free [file]` removes version constraints from requirements file
+- **Cross-Platform**: All new commands work on Windows, macOS, and Linux
+- **Backward Compatible**: All existing functionality preserved
+- **Enhanced CLI**: Improved command-line interface with subcommands
 
 ### 1.1.1
 - **Upgrade Mode**: Added `-U`/`--upgrade` flag to update to latest PyPI versions

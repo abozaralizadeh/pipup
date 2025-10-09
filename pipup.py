@@ -267,6 +267,127 @@ def update_requirements_file(file_path: Path, pip_packages: Dict[str, str], dry_
         print(f"Packages not found in pip freeze: {', '.join(not_found_packages)}")
 
 
+def remove_all_packages():
+    """Remove all packages from virtual environment except pipup itself."""
+    try:
+        # Get all installed packages except editable ones (which includes pipup)
+        result = subprocess.run(['pip', 'freeze', '--exclude-editable'], capture_output=True, text=True, check=True)
+        packages = []
+        for line in result.stdout.strip().split('\n'):
+            if line and '==' in line:
+                package_name = line.split('==')[0]
+                packages.append(package_name)
+        
+        if not packages:
+            print("No packages to remove.")
+            return
+        
+        print(f"Removing {len(packages)} packages...")
+        
+        # Uninstall all packages
+        for package in packages:
+            try:
+                subprocess.run(['pip', 'uninstall', '-y', package], check=True)
+                print(f"Removed {package}")
+            except subprocess.CalledProcessError as e:
+                print(f"Warning: Failed to remove {package}: {e}", file=sys.stderr)
+        
+        print("All packages removed successfully!")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Error running pip freeze: {e}", file=sys.stderr)
+        sys.exit(1)
+    except FileNotFoundError:
+        print("Error: pip not found. Make sure pip is installed and in your PATH.", file=sys.stderr)
+        sys.exit(1)
+
+
+def remove_packages_from_requirements(file_path: Path):
+    """Remove packages listed in requirements.txt from the virtual environment."""
+    if not file_path.exists():
+        print(f"Error: {file_path} not found.", file=sys.stderr)
+        sys.exit(1)
+    
+    # Read requirements.txt and extract package names
+    packages_to_remove = []
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#'):
+                # Extract package name (remove version specifiers and extras)
+                package_name = re.split(r'[=<>!~\[\]]', line)[0].strip()
+                if package_name:
+                    packages_to_remove.append(package_name)
+    
+    if not packages_to_remove:
+        print("No packages found in requirements file.")
+        return
+    
+    print(f"Removing {len(packages_to_remove)} packages from {file_path}...")
+    
+    # Uninstall packages
+    for package in packages_to_remove:
+        try:
+            subprocess.run(['pip', 'uninstall', '-y', package], check=True)
+            print(f"Removed {package}")
+        except subprocess.CalledProcessError as e:
+            print(f"Warning: Failed to remove {package}: {e}", file=sys.stderr)
+    
+    print("Packages removed successfully!")
+
+
+def free_requirements_file(file_path: Path):
+    """Remove all version specifications from requirements.txt, keeping only package names."""
+    if not file_path.exists():
+        print(f"Error: {file_path} not found.", file=sys.stderr)
+        sys.exit(1)
+    
+    # Read current requirements.txt
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    
+    updated_lines = []
+    updated_count = 0
+    
+    for line in lines:
+        line = line.rstrip('\n')
+        original_line = line
+        
+        # Skip empty lines and comments
+        if not line.strip() or line.strip().startswith('#'):
+            updated_lines.append(original_line + '\n' if not original_line.endswith('\n') else original_line)
+            continue
+        
+        # Extract package name (remove version specifiers but keep extras)
+        package_part = line.strip().split()[0]
+        
+        # Remove version specifiers but keep extras like [async]
+        if '[' in package_part:
+            # Package has extras, remove version specifiers before the [
+            base_package = re.split(r'\[', package_part)[0]
+            extras_part = '[' + package_part.split('[')[1]
+            # Remove version specifiers from the extras part too
+            extras_clean = re.split(r'[=<>!~]', extras_part)[0]
+            new_line = f"{base_package}{extras_clean}\n"
+        else:
+            # No extras, just remove version specifiers
+            package_name = re.split(r'[=<>!~]', package_part)[0]
+            new_line = f"{package_name}\n"
+        
+        updated_lines.append(new_line)
+        
+        # Check if we actually removed a version specifier
+        if '==' in original_line or '>=' in original_line or '<=' in original_line or '>' in original_line or '<' in original_line or '~=' in original_line or '!=' in original_line:
+            updated_count += 1
+            print(f"Freed {package_name if '[' not in package_part else package_part}: removed version specification")
+    
+    # Write updated requirements.txt
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.writelines(updated_lines)
+    
+    print(f"Freed {updated_count} packages from version constraints in {file_path}")
+
+
 def main():
     """Main entry point for the pipup command."""
     parser = argparse.ArgumentParser(
@@ -280,6 +401,11 @@ Examples:
   pipup -U --dry-run                       # Preview latest version updates
   pipup requirements.txt                   # Update requirements.txt
   pipup requirements-dev.txt -U            # Update requirements-dev.txt to latest
+  pipup remove --all                       # Remove all packages except pipup
+  pipup remove                             # Remove packages from requirements.txt
+  pipup remove requirements.txt            # Remove packages from specific file
+  pipup free                               # Remove version constraints from requirements.txt
+  pipup free requirements.txt              # Remove version constraints from specific file
 
 Skip Conventions:
   #skip-pipup or #skip-requp               # Skip the next package line
@@ -287,48 +413,117 @@ Skip Conventions:
         """
     )
     
-    parser.add_argument(
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    
+    # Update command (default behavior)
+    update_parser = subparsers.add_parser('update', help='Update package versions (default command)')
+    update_parser.add_argument(
         'requirements_file',
         nargs='?',
         default='requirements.txt',
         help='Path to requirements.txt file to update (default: requirements.txt)'
     )
-    
-    parser.add_argument(
+    update_parser.add_argument(
         '--dry-run',
         action='store_true',
         help='Show what would be updated without making changes'
     )
-    
-    parser.add_argument(
+    update_parser.add_argument(
         '-U', '--upgrade',
         action='store_true',
         help='Update packages to latest versions from PyPI instead of using pip freeze'
     )
     
+    # Remove command
+    remove_parser = subparsers.add_parser('remove', help='Remove packages from virtual environment')
+    remove_parser.add_argument(
+        'requirements_file',
+        nargs='?',
+        default='requirements.txt',
+        help='Path to requirements.txt file (default: requirements.txt)'
+    )
+    remove_parser.add_argument(
+        '--all',
+        action='store_true',
+        help='Remove all packages except pipup itself'
+    )
+    
+    # Free command
+    free_parser = subparsers.add_parser('free', help='Remove version constraints from requirements.txt')
+    free_parser.add_argument(
+        'requirements_file',
+        nargs='?',
+        default='requirements.txt',
+        help='Path to requirements.txt file (default: requirements.txt)'
+    )
+    
     parser.add_argument(
         '--version',
         action='version',
-        version='pipup 1.1.1'
+        version='pipup 1.2.0'
     )
     
-    args = parser.parse_args()
-    
-    requirements_path = Path(args.requirements_file)
-    
-    if args.upgrade:
-        print("Upgrade mode: Getting latest versions from PyPI...")
-        pip_packages = {}  # Will be populated in update_requirements_file
+    # Check if we're in legacy mode (no subcommand provided)
+    import sys
+    if len(sys.argv) == 1 or (len(sys.argv) > 1 and sys.argv[1] not in ['update', 'remove', 'free', '--help', '--version', '-h']):
+        # Legacy mode - treat as update command
+        legacy_parser = argparse.ArgumentParser(add_help=False)
+        legacy_parser.add_argument('requirements_file', nargs='?', default='requirements.txt')
+        legacy_parser.add_argument('--dry-run', action='store_true')
+        legacy_parser.add_argument('-U', '--upgrade', action='store_true')
+        
+        try:
+            legacy_args = legacy_parser.parse_args()
+            requirements_path = Path(legacy_args.requirements_file)
+            
+            if legacy_args.upgrade:
+                print("Upgrade mode: Getting latest versions from PyPI...")
+                pip_packages = {}  # Will be populated in update_requirements_file
+            else:
+                print("Running pip freeze...")
+                pip_packages = run_pip_freeze()
+                print(f"Found {len(pip_packages)} installed packages")
+            
+            print(f"{'Dry run: ' if legacy_args.dry_run else ''}Updating {requirements_path}...")
+            update_requirements_file(requirements_path, pip_packages, legacy_args.dry_run, legacy_args.upgrade)
+            
+            if not legacy_args.dry_run:
+                print("Done!")
+        except SystemExit:
+            # If legacy parsing fails, show help
+            parser.print_help()
+            sys.exit(1)
     else:
-        print("Running pip freeze...")
-        pip_packages = run_pip_freeze()
-        print(f"Found {len(pip_packages)} installed packages")
-    
-    print(f"{'Dry run: ' if args.dry_run else ''}Updating {requirements_path}...")
-    update_requirements_file(requirements_path, pip_packages, args.dry_run, args.upgrade)
-    
-    if not args.dry_run:
-        print("Done!")
+        # New subcommand mode
+        args = parser.parse_args()
+        
+        if args.command == 'update':
+            requirements_path = Path(args.requirements_file)
+            
+            if args.upgrade:
+                print("Upgrade mode: Getting latest versions from PyPI...")
+                pip_packages = {}  # Will be populated in update_requirements_file
+            else:
+                print("Running pip freeze...")
+                pip_packages = run_pip_freeze()
+                print(f"Found {len(pip_packages)} installed packages")
+            
+            print(f"{'Dry run: ' if args.dry_run else ''}Updating {requirements_path}...")
+            update_requirements_file(requirements_path, pip_packages, args.dry_run, args.upgrade)
+            
+            if not args.dry_run:
+                print("Done!")
+        
+        elif args.command == 'remove':
+            if args.all:
+                remove_all_packages()
+            else:
+                requirements_path = Path(args.requirements_file)
+                remove_packages_from_requirements(requirements_path)
+        
+        elif args.command == 'free':
+            requirements_path = Path(args.requirements_file)
+            free_requirements_file(requirements_path)
 
 
 if __name__ == '__main__':
