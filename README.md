@@ -304,7 +304,7 @@ python -m build
 
 ## 📝 Changelog
 
-### 1.2.0
+### 1.2.1
 - **New Commands**: Added `remove` and `free` subcommands for package management
 - **Remove All**: `pipup remove --all` removes all packages except pipup itself
 - **Remove Specific**: `pipup remove [file]` removes packages from requirements file

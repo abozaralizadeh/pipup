@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: pipup
-Version: 1.2.0
+Version: 1.2.1
 Summary: Update Python package versions in requirements.txt with exact versions from pip freeze
 Home-page: https://github.com/abozaralizadeh/pipup
 Author: Abozar Alizadeh

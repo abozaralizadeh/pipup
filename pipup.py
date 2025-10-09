@@ -460,7 +460,7 @@ Skip Conventions:
     parser.add_argument(
         '--version',
         action='version',
-        version='pipup 1.2.0'
+        version='pipup 1.2.1'
     )
     
     # Check if we're in legacy mode (no subcommand provided)
