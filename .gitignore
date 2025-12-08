@@ -1,3 +1,4 @@
 test_*.txt
 /__pycache__
 homebrew-core/
+homebrew/pipup.rb.bak
